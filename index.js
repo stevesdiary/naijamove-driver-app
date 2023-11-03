@@ -1,9 +1,17 @@
-// Conditionally add property to object using spread operator
+// Use includes to check for multiple criteria
 
-const includeSalary = true;
-const employee = { 
-   id: 1, 
-   name: "John",
-   ...(includeSalary && {salary: 50000 })
+const rgbColors = ["red", "green", "blue"];
+const isRGBColor = (color) => {
+   return rgbColors.includes(color);
 };
-console.table(employee)
+
+
+//Remove duplicate from an array
+
+const numbers = [1, 2, 4, 5, 2, 4, 9, 4, 11];
+const colors = [ "red", "pink", "red", "blue", "black", "pink"];
+
+const uniqueNumbers = [ ...new Set(numbers) ];
+const uniqueColors = [...new Set(colors)];
+
+console.log(uniqueColors, uniqueNumbers)
