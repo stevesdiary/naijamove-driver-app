@@ -14,6 +14,13 @@ const [, , ...restScores] = scores;
 console.log(restScores); //[ 30, 80, 90 ]
 
 // Filter with JSON.stringify
+
+/*
+The JSON.stringify() method converts a JavaScript object to a JSON string.
+The 2nd parameter to JSON.stringify() is a replacer or filter that can be a function or an array.
+When 2nd parameter is passed as an array, it works as a filter and includes only those properties in the JSON string which are defined in an array.
+*/
+
 const employee = {
    id: 1,
    name: "James",
