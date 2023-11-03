@@ -11,6 +11,13 @@ const { salary, ...newEmployee } = employee;
 console.log(newEmployee); //{ id: 1, name: 'john' }
 
 // Use of falsy bouncer
+/*
+A falsy value is a value that is considered false when examined as a Boolean.
+Falsy Bouncer means removing all falsy values from an array.
+Falsy values in JavaScript are false, null, 0, undefined, NaN, and "" (empty string).
+Pass the Boolean to Array.filter as the first argument and it will serve as a falsy bouncer.
+*/
+
 const numbersWithFalsyValues = [7, null, 11, 17, false, NaN];
 
 const numbers = numbersWithFalsyValues.filter(Boolean);
