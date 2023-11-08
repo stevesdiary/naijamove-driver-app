@@ -7,4 +7,3 @@ let names = ["Chantal", "John", "Maxime", "Bobbi", "Jair"];
 for (let name of names){
    console.log(name);
 }
-console.table(names)
