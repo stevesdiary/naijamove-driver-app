@@ -1,9 +1,10 @@
-//Form table with nested for loop
-let myTable = [];
-for (let i = 0; i < 3; i++){
-   myTable.push([]);
-   for (let j = 0; j < 7; j++){
-      myTable[i].push(j);
+//Using 'startsWith()' function
+let names = ["Chantal", "John", "Maxime", "Bobbi", "Jair"];
+for (let i = 0; i < names.length; i ++){
+   if(names[i].startsWith("M")){
+      delete names[i];
+      continue;
    }
+   names[i] = "hello " + names[i];
 }
-console.table(myTable)
+console.log(names);
