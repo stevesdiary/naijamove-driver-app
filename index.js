@@ -1,9 +1,16 @@
 /**
-There is another loop we can use to iterate over the elements of an array:
-the "for of loop".
+Manipulating objects with loops can also be done with another variation of
+the for loop, the 'for in loop'. The 'for in loop' is somewhat similar to the
+'for of loop'. Again here, we need to specify a temporary name, also
+referred to as a key, to store each property name in.
  */
 
-let names = ["Chantal", "John", "Maxime", "Bobbi", "Jair"];
-for (let name of names){
-   console.log(name);
+let car = {
+   model: "Camry",
+   make: "Toyota",
+   year: 2013,
+   color: "Navy Blue"
+};
+for (let prop in car){
+   console.log(car[prop]);
 }
