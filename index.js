@@ -1,16 +1,13 @@
-/**
-Manipulating objects with loops can also be done with another variation of
-the for loop, the 'for in loop'. The 'for in loop' is somewhat similar to the
-'for of loop'. Again here, we need to specify a temporary name, also
-referred to as a key, to store each property name in.
- */
+// Callback function
+const array = ["Dary", "Sandra", "Wills", "James"]
 
-let car = {
-   model: "Camry",
-   make: "Toyota",
-   year: 2013,
-   color: "Navy Blue"
-};
-for (let prop in car){
-   console.log(car[prop]);
+const myForEach = (arr, cb) => {
+   for (let i = 0; i < arr.length; i++) {
+      const element = arr[i];
+      cb(element)
+   }
 }
+
+myForEach(array, (name) => {
+   console.log(name);
+})
