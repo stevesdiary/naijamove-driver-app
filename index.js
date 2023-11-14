@@ -1,26 +1,18 @@
-// Callback function
-const array = ["Dary", "Sandra", "Wills", "James"]
-
-const myForEach = (arr, cb) => {
-   for (let i = 0; i < arr.length; i++) {
-      const element = arr[i];
-      cb(element)
+/**
+ Generators
+ * JavaScript also has a feature called generator functions.
+These are similar, but without the promises.
+When you define a function with function* (placing an asterisk after the
+word function), it becomes a generator. When you call a generator, it returns
+an iterator
+ */
+function* powers(n) {
+   for (let current = n; ; current *= n) {
+     yield current;
    }
-}
-
-myForEach(array, (name) => {
-   console.log(name);
-})
-
-
-const loadPokemon = (id, cb) => {
-   fetch(`https://pokeapi.co/api/v2/pokemon/${id}`)
-   .then(res => res.json())
-   .then(data => {
-      cb(data)
-   })
-}
-
-loadPokemon(50, (pokemon)=> {
-   console.log(pokemon)
-})
+ }
+ 
+ for (let power of powers(3)) {
+   if (power > 50) break;
+   console.log(power);
+ }
