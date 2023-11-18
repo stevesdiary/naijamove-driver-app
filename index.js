@@ -1,18 +1,13 @@
-/**
- Generators
- * JavaScript also has a feature called generator functions.
-These are similar, but without the promises.
-When you define a function with function* (placing an asterisk after the
-word function), it becomes a generator. When you call a generator, it returns
-an iterator
- */
-function* powers(n) {
-   for (let current = n; ; current *= n) {
-     yield current;
-   }
- }
- 
- for (let power of powers(3)) {
-   if (power > 50) break;
-   console.log(power);
- }
+const myAge = 20;
+// Calculating dogYears
+let earlyYears = 2; 
+earlyYears *= 10.5;
+let laterYears = myAge - 2;
+laterYears *= 4;
+console.log(earlyYears, laterYears)
+const myAgeInDogYears = earlyYears + laterYears;
+console.log(myAgeInDogYears);
+//Turn name to lower case
+let myName = "Steve";
+myName = myName.toLowerCase();
+console.log(myName);
