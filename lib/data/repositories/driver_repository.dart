@@ -47,23 +47,36 @@ class DriverRepository {
     return list.map((e) => DriverDocumentRecord.fromJson(Map<String, dynamic>.from(e as Map))).toList();
   }
 
-  /// POST /drivers/documents — [fileUrl] must already be uploaded to storage.
+  /// POST /drivers/documents — [fileKey] comes from [UploadRepository.upload] (purpose driverDocument).
   Future<DriverDocumentRecord> submitDocument({
     required DriverDocumentType type,
-    String? fileUrl,
+    String? fileKey,
     String? referenceNumber,
     DateTime? expiresAt,
   }) async {
     if (ApiConfig.useMock) {
-      return DriverDocumentRecord(id: 'mock_doc', type: type, fileUrl: fileUrl, referenceNumber: referenceNumber, expiresAt: expiresAt);
+      return DriverDocumentRecord(id: 'mock_doc', type: type, fileUrl: fileKey, referenceNumber: referenceNumber, expiresAt: expiresAt);
     }
     final j = await _api.postJson('/drivers/documents', body: {
       'type': type.wire,
-      'fileUrl': ?fileUrl,
+      'fileKey': ?fileKey,
       'referenceNumber': ?referenceNumber,
       'expiresAt': ?expiresAt?.toUtc().toIso8601String(),
     });
     return DriverDocumentRecord.fromJson(j);
+  }
+
+  /// GET /drivers/documents/:id/url — 10-minute presigned read URL.
+  Future<String> documentUrl(String documentId) async {
+    if (ApiConfig.useMock) return 'https://example.invalid/mock-document.jpg';
+    final j = await _api.getJson('/drivers/documents/$documentId/url');
+    return j['url'] as String;
+  }
+
+  /// POST /drivers/me/photo — [fileKey] from [UploadRepository.upload] (purpose profilePhoto).
+  Future<void> setProfilePhoto(String fileKey) async {
+    if (ApiConfig.useMock) return;
+    await _api.postJson('/drivers/me/photo', body: {'fileKey': fileKey});
   }
 }
 

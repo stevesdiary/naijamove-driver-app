@@ -14,6 +14,8 @@ import '../../data/api/wire.dart';
 import '../../data/models.dart';
 import '../../data/repositories/auth_repository.dart';
 import '../../data/repositories/driver_repository.dart';
+import '../../data/repositories/upload_repository.dart';
+import '../../core/upload/pick_and_upload.dart';
 import 'auth_screens.dart';
 
 /// 1.5 — Profile setup. Creates the driver profile server-side on Continue.
@@ -25,8 +27,14 @@ class ProfileSetupScreen extends ConsumerStatefulWidget {
 
 class _ProfileSetupScreenState extends ConsumerState<ProfileSetupScreen> {
   final _name = TextEditingController();
-  bool _photo = false;
+  String? _photoKey;
+  bool get _photo => _photoKey != null;
   bool _busy = false;
+
+  Future<void> _pickPhoto() async {
+    final key = await pickAndUpload(context, ref, UploadPurpose.profilePhoto);
+    if (key != null && mounted) setState(() => _photoKey = key);
+  }
 
   @override
   void dispose() {
@@ -44,6 +52,7 @@ class _ProfileSetupScreenState extends ConsumerState<ProfileSetupScreen> {
         final account = await ref.read(authRepositoryProvider).registerAsDriver();
         ref.read(sessionProvider.notifier).applyAccount(account);
       }
+      if (_photoKey != null) await ref.read(driverRepositoryProvider).setProfilePhoto(_photoKey!);
       if (mounted) context.push(Routes.vehicleSetup);
     } on ApiException catch (e) {
       if (mounted) showToast(context, e.message, kind: ToastKind.error);
@@ -64,7 +73,7 @@ class _ProfileSetupScreenState extends ConsumerState<ProfileSetupScreen> {
         children: [
           Center(
             child: GestureDetector(
-              onTap: () => setState(() => _photo = true),
+              onTap: _pickPhoto,
               child: Stack(
                 children: [
                   _photo
@@ -241,10 +250,12 @@ class _DocumentUploadScreenState extends ConsumerState<DocumentUploadScreen> {
   ];
 
   Future<void> _upload(DriverDocumentType type) async {
+    // Profile photo was captured on the previous step; everything else is picked here.
+    final key = await pickAndUpload(context, ref, UploadPurpose.driverDocument);
+    if (key == null || !mounted) return;
     setState(() => _uploading = type);
     try {
-      // File picking/upload to storage is a later step; the record is what the review queue needs.
-      await ref.read(driverRepositoryProvider).submitDocument(type: type, referenceNumber: 'pending-upload');
+      await ref.read(driverRepositoryProvider).submitDocument(type: type, fileKey: key);
       setState(() => _done.add(type));
     } on ApiException catch (e) {
       if (mounted) showToast(context, e.message, kind: ToastKind.error);

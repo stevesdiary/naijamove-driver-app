@@ -15,6 +15,8 @@ import '../../data/api/wire.dart';
 import '../../data/mock_data.dart';
 import '../../data/models.dart';
 import '../../data/repositories/driver_repository.dart';
+import '../../data/repositories/upload_repository.dart';
+import '../../core/upload/pick_and_upload.dart';
 
 /// 6.1 — Profile home.
 class ProfileScreen extends ConsumerWidget {
@@ -402,8 +404,10 @@ class DocumentStatusScreen extends ConsumerWidget {
       'Vehicle Inspection Certificate' => DriverDocumentType.inspection,
       _ => DriverDocumentType.profilePhoto,
     };
+    final key = await pickAndUpload(context, ref, UploadPurpose.driverDocument);
+    if (key == null || !context.mounted) return;
     try {
-      await ref.read(driverRepositoryProvider).submitDocument(type: type, referenceNumber: 'pending-upload');
+      await ref.read(driverRepositoryProvider).submitDocument(type: type, fileKey: key);
       if (context.mounted) showToast(context, '${d.name} submitted for review', kind: ToastKind.success);
     } on ApiException catch (e) {
       if (context.mounted) showToast(context, e.message, kind: ToastKind.error);

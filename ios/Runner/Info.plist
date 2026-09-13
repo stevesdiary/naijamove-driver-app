@@ -2,6 +2,10 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>NSCameraUsageDescription</key>
+	<string>NaijaMove uses the camera to photograph your documents, vehicle and delivery proofs.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>NaijaMove needs photo access so you can upload documents and vehicle photos.</string>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
 	<key>CFBundleDevelopmentRegion</key>
