@@ -5,7 +5,7 @@ import '../../core/utils/format.dart';
 import '../../core/widgets/components.dart';
 import '../../data/models.dart';
 
-/// Chat bubble per the spec: rider = Primary Blue right; agent/driver = surface left; system = centred italic.
+/// Chat bubble per the spec: driver = Primary Blue right; rider/agent = surface left; system = centred italic.
 class ChatBubble extends StatelessWidget {
   const ChatBubble({
     super.key,
@@ -37,7 +37,7 @@ class ChatBubble extends StatelessWidget {
         ),
       );
     }
-    final mine = m.sender == MessageSender.rider;
+    final mine = m.sender == MessageSender.driver;
     final radius = BorderRadius.only(
       topLeft: const Radius.circular(16),
       topRight: const Radius.circular(16),
