@@ -117,6 +117,15 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         decoration: BoxDecoration(color: context.surface, borderRadius: BorderRadius.circular(14), boxShadow: _shadow),
                         child: const BrandLockup(size: 22),
                       ),
+                      const SizedBox(width: 8),
+                      // Compact status pill — tap to go on/off duty (drivers don't
+                      // toggle often; keep the map uncluttered, status always visible).
+                      _StatusPill(
+                        online: online,
+                        enabled: status.canGoOnline && !_toggling,
+                        loading: _toggling,
+                        onTap: () => _toggle(!online),
+                      ),
                       const Spacer(),
                       if (scheduledCount > 0) ...[
                         _TopIcon(
@@ -154,16 +163,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     child: MapFab(icon: Icons.my_location_rounded, onPressed: () {}),
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 24),
-                  child: _OnlineToggle(
-                    online: online,
-                    enabled: status.canGoOnline && !_toggling,
-                    loading: _toggling,
-                    onTap: () => _toggle(!online),
-                  ),
-                ),
-                const SizedBox(height: 12),
                 SheetSurface(
                   handle: true,
                   child: Column(
@@ -301,42 +300,57 @@ class _WaitingChipState extends State<_WaitingChip> with SingleTickerProviderSta
   }
 }
 
-/// The hero: 64pt pill, teal when online, grey when offline, disabled while unapproved.
-class _OnlineToggle extends StatelessWidget {
-  const _OnlineToggle({required this.online, required this.enabled, required this.loading, required this.onTap});
+/// Compact duty pill in the top bar. Shows the driver's status at a glance and
+/// toggles on/off duty in one tap — replaces the old full-width hero toggle so
+/// the map stays uncluttered. Greyed and non-interactive until the account is
+/// approved (the sheet's _StatusBanner explains why).
+class _StatusPill extends StatelessWidget {
+  const _StatusPill({required this.online, required this.enabled, required this.loading, required this.onTap});
   final bool online;
   final bool enabled;
   final bool loading;
   final VoidCallback onTap;
   @override
   Widget build(BuildContext context) {
-    final color = !enabled && !loading ? AppColors.offlineGrey.withValues(alpha: 0.45) : online ? AppColors.successTeal : AppColors.offlineGrey;
+    final dotColor = !enabled && !loading
+        ? AppColors.offlineGrey.withValues(alpha: 0.5)
+        : online
+            ? AppColors.successTeal
+            : AppColors.offlineGrey;
     return Material(
-      color: color,
+      color: context.surface,
       borderRadius: BorderRadius.circular(20),
-      elevation: 6,
-      shadowColor: color.withValues(alpha: 0.4),
       child: InkWell(
         onTap: enabled ? onTap : null,
         borderRadius: BorderRadius.circular(20),
-        child: SizedBox(
-          height: 64,
+        child: Container(
+          height: 40,
+          padding: const EdgeInsets.symmetric(horizontal: 12),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20),
+            boxShadow: _shadow,
+            border: online ? Border.all(color: AppColors.successTeal.withValues(alpha: 0.4)) : null,
+          ),
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
             children: [
               if (loading)
-                const SizedBox(width: 22, height: 22, child: CircularProgressIndicator(strokeWidth: 2.5, color: Colors.white))
-              else ...[
-                if (online) const _PulseDot() else const Icon(Icons.power_settings_new_rounded, color: Colors.white),
-                const SizedBox(width: 12),
-                Text(online ? "You're Online" : "You're Offline",
-                    style: const TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.w700)),
-                const SizedBox(width: 12),
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                  decoration: BoxDecoration(color: Colors.white.withValues(alpha: 0.18), borderRadius: BorderRadius.circular(10)),
-                  child: Text(online ? 'Go Offline' : 'Go Online',
-                      style: const TextStyle(color: Colors.white, fontSize: 13, fontWeight: FontWeight.w600)),
+                SizedBox(width: 14, height: 14, child: CircularProgressIndicator(strokeWidth: 2, color: dotColor))
+              else if (online)
+                const _PulseDot(color: AppColors.successTeal, size: 9)
+              else
+                Container(width: 9, height: 9, decoration: BoxDecoration(color: dotColor, shape: BoxShape.circle)),
+              const SizedBox(width: 8),
+              Text(
+                online ? 'Online' : 'Offline',
+                style: TextStyle(color: context.textPrimary, fontSize: 14, fontWeight: FontWeight.w700),
+              ),
+              if (enabled) ...[
+                const SizedBox(width: 4),
+                Icon(
+                  online ? Icons.toggle_on_rounded : Icons.toggle_off_rounded,
+                  size: 24,
+                  color: online ? AppColors.successTeal : AppColors.offlineGrey,
                 ),
               ],
             ],
@@ -348,7 +362,9 @@ class _OnlineToggle extends StatelessWidget {
 }
 
 class _PulseDot extends StatefulWidget {
-  const _PulseDot();
+  const _PulseDot({this.color = Colors.white, this.size = 12});
+  final Color color;
+  final double size;
   @override
   State<_PulseDot> createState() => _PulseDotState();
 }
@@ -365,9 +381,9 @@ class _PulseDotState extends State<_PulseDot> with SingleTickerProviderStateMixi
   Widget build(BuildContext context) => ScaleTransition(
         scale: Tween(begin: 0.8, end: 1.2).animate(CurvedAnimation(parent: _c, curve: Curves.easeInOut)),
         child: Container(
-          width: 12,
-          height: 12,
-          decoration: BoxDecoration(color: Colors.white, shape: BoxShape.circle, boxShadow: [BoxShadow(color: Colors.white.withValues(alpha: 0.6), blurRadius: 8)]),
+          width: widget.size,
+          height: widget.size,
+          decoration: BoxDecoration(color: widget.color, shape: BoxShape.circle, boxShadow: [BoxShadow(color: widget.color.withValues(alpha: 0.6), blurRadius: 8)]),
         ),
       );
 }
