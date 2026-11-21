@@ -2,6 +2,15 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>NaijaMove Driver needs your location to navigate to pickups, track trips, and offer nearby ride requests.</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>NaijaMove Driver tracks your location in the background while you are online to match trips and navigate.</string>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>location</string>
+		<string>remote-notification</string>
+	</array>
 	<key>NSCameraUsageDescription</key>
 	<string>NaijaMove uses the camera to photograph your documents, vehicle and delivery proofs.</string>
 	<key>NSPhotoLibraryUsageDescription</key>

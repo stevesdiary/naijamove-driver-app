@@ -1,0 +1,7 @@
+# Example Android Release Signing Properties
+# In production, copy to key.properties and configure with your genuine keystore details.
+# DO NOT commit the production key.properties to version control.
+keyAlias=naijamove_release_key
+keyPassword=your_key_password
+storeFile=/path/to/upload-keystore.jks
+storePassword=your_store_password
